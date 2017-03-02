@@ -1,0 +1,3 @@
+[submodule "include/fmi"]
+	path = include/fmi
+	url = https://github.com/into-cps/fmi.git
