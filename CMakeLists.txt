@@ -18,7 +18,11 @@ endif()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFMI_COSIMULATION -O0 -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFMI_COSIMULATION -O0 -g")
 
-include_directories(include/fmi/include)
+add_subdirectory (thrird_party/minizip)
+
+include_directories(include/fmi/include thrird_party/minizip)
+
+
 
 file(GLOB C_FILES src/*.c) # ../includes/templates/*.c)
 file(GLOB CPP_FILES src/*.cpp)
@@ -27,7 +31,8 @@ file(GLOB CPP_FILES src/*.cpp)
 
 
 #add_library(${PROJECT_NAME} SHARED fmu.cpp FmuContainer.cpp JavaLauncher.cpp ConfigFile.cpp)
-add_executable(${PROJECT_NAME} ${C_FILES} ${CPP_FILES})
+add_executable(${PROJECT_NAME} ${C_FILES} thrird_party/minizip/minishared.c ${CPP_FILES})
+target_link_libraries (${PROJECT_NAME} minizip)
 
 #target_link_libraries(${PROJECT_NAME} libshmfmi)
 #target_link_libraries(${PROJECT_NAME} ${libshmfmi_LIBS})
