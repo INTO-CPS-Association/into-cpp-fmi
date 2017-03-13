@@ -24,18 +24,12 @@ include_directories(include/fmi/include thrird_party/minizip)
 
 
 
-file(GLOB C_FILES src/*.c) # ../includes/templates/*.c)
+file(GLOB C_FILES src/*.c) 
 file(GLOB CPP_FILES src/*.cpp)
 
-#add_library(${PROJECT_NAME} SHARED ${C_FILES}) # ${CPP_FILES})
+add_executable(${PROJECT_NAME}_main ${C_FILES} thrird_party/minizip/minishared.c ${CPP_FILES})
+target_link_libraries (${PROJECT_NAME}_main minizip)
 
-
-#add_library(${PROJECT_NAME} SHARED fmu.cpp FmuContainer.cpp JavaLauncher.cpp ConfigFile.cpp)
-add_executable(${PROJECT_NAME} ${C_FILES} thrird_party/minizip/minishared.c ${CPP_FILES})
-target_link_libraries (${PROJECT_NAME} minizip)
-
-#target_link_libraries(${PROJECT_NAME} libshmfmi)
-#target_link_libraries(${PROJECT_NAME} ${libshmfmi_LIBS})
 
 
 foreach(LETTER ${CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES})
@@ -49,11 +43,7 @@ endif()
 endforeach()
 
 message(STATUS "Static linking with libstdc++.a in ${STDCPP_LIBRARY}")
-target_link_libraries(${PROJECT_NAME} ${STDCPP_LIBRARY})
-
-
-# find_library(PTHREAD_LIBRARY NAMES libpthread.a libpthread.dylib)
-# target_link_libraries(${PROJECT_NAME} ${PTHREAD_LIBRARY})
+target_link_libraries(${PROJECT_NAME}_main ${STDCPP_LIBRARY})
 
 
 # I need this: -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic
@@ -63,13 +53,10 @@ if (WIN32)
 	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
 endif() 
 
-#set_target_properties(${PROJECT_NAME}
-#                      PROPERTIES POSITION_INDEPENDENT_CODE ON)
+# Configure exposed dependency information to other projects
 
+add_library(${PROJECT_NAME} ${C_FILES} thrird_party/minizip/minishared.c ${CPP_FILES})
+target_link_libraries (${PROJECT_NAME} minizip)
+target_include_directories(${PROJECT_NAME} PUBLIC include/fmi/include src/)
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-
-# Expose A's public includes (including the ones of A's dependencies
-# transitively) to other subprojects through cache variable.
-#set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${libshmfmi_INCLUDE_DIRS} CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
-
-#set(${PROJECT_NAME}_LIBS ${libshmfmi_LIBS} CACHE INTERNAL "${PROJECT_NAME}: Libraries" FORCE)

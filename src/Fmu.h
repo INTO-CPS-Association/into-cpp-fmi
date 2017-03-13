@@ -139,6 +139,7 @@ public:
 	shared_ptr<ComponentContext> getContext(const char* instanceName);
 
 	static shared_ptr<string> fmi2StatusToString(fmi2Status status);
+	static shared_ptr<string> combinePath(shared_ptr<string> path1, shared_ptr<string> path3);
 
 	fmi2Component instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,
 			 fmi2Boolean visible, fmi2Boolean loggingOn,shared_ptr<Callback> callback);

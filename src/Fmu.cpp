@@ -409,6 +409,14 @@ shared_ptr<string> Fmu::fmi2StatusToString(fmi2Status status)
 	}
 }
 
+
+shared_ptr<string> Fmu::combinePath(shared_ptr<string> path1, shared_ptr<string> path3){
+	shared_ptr<string> base = make_shared<string>(*path1);
+	base->push_back(separator());
+	base->append(*path3);
+	return base;
+}
+
 /* FMI common */
 const char* Fmu::getTypesPlatform(void)
 {
