@@ -409,8 +409,8 @@ shared_ptr<string> Fmu::fmi2StatusToString(fmi2Status status)
 	}
 }
 
-
-shared_ptr<string> Fmu::combinePath(shared_ptr<string> path1, shared_ptr<string> path3){
+shared_ptr<string> Fmu::combinePath(shared_ptr<string> path1, shared_ptr<string> path3)
+{
 	shared_ptr<string> base = make_shared<string>(*path1);
 	base->push_back(separator());
 	base->append(*path3);
@@ -472,8 +472,7 @@ void fmuLogger(void *componentEnvironment, fmi2String instanceName, fmi2Status s
 
 	Fmu* fmu = (Fmu*) componentEnvironment;
 
-
-	shared_ptr<ComponentContext> context = (fmu==NULL?NULL:fmu->getContext(instanceName));
+	shared_ptr<ComponentContext> context = (fmu == NULL ? NULL : fmu->getContext(instanceName));
 
 	if (context != NULL)
 	{
@@ -488,7 +487,7 @@ void fmuLogger(void *componentEnvironment, fmi2String instanceName, fmi2Status s
 
 /* Creation and destruction of FMU instances and setting debug status */
 shared_ptr<FmuComponent> Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,
-		 fmi2Boolean visible, fmi2Boolean loggingOn, shared_ptr<Callback> callback)
+		fmi2Boolean visible, fmi2Boolean loggingOn, shared_ptr<Callback> callback)
 {
 	fmi2CallbackFunctions *functions = (fmi2CallbackFunctions *) malloc(sizeof(fmi2CallbackFunctions));
 
@@ -504,12 +503,12 @@ shared_ptr<FmuComponent> Fmu::instantiate(fmi2String instanceName, fmi2Type fmuT
 	activeCallbacks.insert(make_pair(instanceName, context));
 
 	auto fmuResourceLocation = string("file:");
-		fmuResourceLocation.append(*this->extractedDirectory);
-		fmuResourceLocation.push_back('/');
-		fmuResourceLocation.append("resources");
+	fmuResourceLocation.append(*this->extractedDirectory);
+	fmuResourceLocation.push_back('/');
+	fmuResourceLocation.append("resources");
 
-	fmi2Component comp = this->instantiate(instanceName, fmuType, fmuGUID, fmuResourceLocation.c_str(), functions, visible,
-			loggingOn);
+	fmi2Component comp = this->instantiate(instanceName, fmuType, fmuGUID, fmuResourceLocation.c_str(), functions,
+			visible, loggingOn);
 
 	if (comp == NULL)
 	{
@@ -522,8 +521,8 @@ shared_ptr<FmuComponent> Fmu::instantiate(fmi2String instanceName, fmi2Type fmuT
 	return fmuComp;
 }
 
-fmi2Component Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,fmi2String fmuResourceLocation,
-		 const fmi2CallbackFunctions* functions, fmi2Boolean visible,
+fmi2Component Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,
+		fmi2String fmuResourceLocation, const fmi2CallbackFunctions* functions, fmi2Boolean visible,
 		fmi2Boolean loggingOn)
 {
 
@@ -533,6 +532,13 @@ fmi2Component Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2St
 void Fmu::freeInstance(fmi2Component c)
 {
 	return this->handles->freeInstance(c);
+}
+
+fmi2Status Fmu::doStep(fmi2Component comp, fmi2Real currentCommunicationPoint, fmi2Real communicationStepSize,
+		fmi2Boolean noSetFMUStatePriorToCurrentPoint)
+{
+	return this->handles->doStep(comp, currentCommunicationPoint, communicationStepSize,
+			noSetFMUStatePriorToCurrentPoint);
 }
 
 /* Enter and exit initialization mode, terminate and reset */
