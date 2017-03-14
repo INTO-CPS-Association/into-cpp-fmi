@@ -130,7 +130,9 @@ typedef struct
 	shared_ptr<Callback> callbacks;
 } ComponentContext;
 
-class Fmu
+ struct FmuComponent;
+
+class Fmu :public std::enable_shared_from_this<Fmu>
 {
 public:
 	Fmu(const char* path);bool initialize();
@@ -141,8 +143,8 @@ public:
 	static shared_ptr<string> fmi2StatusToString(fmi2Status status);
 	static shared_ptr<string> combinePath(shared_ptr<string> path1, shared_ptr<string> path3);
 
-	fmi2Component instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,
-			 fmi2Boolean visible, fmi2Boolean loggingOn,shared_ptr<Callback> callback);
+	shared_ptr<FmuComponent> instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID, fmi2Boolean visible,
+			fmi2Boolean loggingOn, shared_ptr<Callback> callback);
 
 	/***************************************************
 	 Common Functions
@@ -190,8 +192,7 @@ public:
 
 private:
 
-
-	std::shared_ptr<string>  extractedDirectory;
+	std::shared_ptr<string> extractedDirectory;
 	std::shared_ptr<string> path;
 	static const char* platform;
 	static const char* library_ext;
@@ -201,6 +202,13 @@ private:
 	bool unpack(const char *zip_file_path, const char* output_folder);
 
 };
+
+
+ struct FmuComponent
+{
+	shared_ptr<Fmu> fmu;
+	fmi2Component component;
+} ;
 
 } /* namespace fmi2 */
 

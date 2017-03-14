@@ -487,7 +487,7 @@ void fmuLogger(void *componentEnvironment, fmi2String instanceName, fmi2Status s
 }
 
 /* Creation and destruction of FMU instances and setting debug status */
-fmi2Component Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,
+shared_ptr<FmuComponent> Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,
 		 fmi2Boolean visible, fmi2Boolean loggingOn, shared_ptr<Callback> callback)
 {
 	fmi2CallbackFunctions *functions = (fmi2CallbackFunctions *) malloc(sizeof(fmi2CallbackFunctions));
@@ -515,7 +515,11 @@ fmi2Component Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2St
 	{
 		activeCallbacks.erase(activeCallbacks.find(instanceName));
 	}
-	return comp;
+
+	auto fmuComp = make_shared<FmuComponent>();
+	fmuComp->fmu = shared_from_this();
+	fmuComp->component = comp;
+	return fmuComp;
 }
 
 fmi2Component Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,fmi2String fmuResourceLocation,
