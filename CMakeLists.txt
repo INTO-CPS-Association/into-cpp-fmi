@@ -55,7 +55,10 @@ endif()
 
 # Configure exposed dependency information to other projects
 
-add_library(${PROJECT_NAME} ${C_FILES} thrird_party/minizip/minishared.c ${CPP_FILES})
+file(GLOB CPP_FILES_LIB src/*.cpp)
+list(REMOVE_ITEM CPP_FILES_LIB "src/main.cpp")
+
+add_library(${PROJECT_NAME} ${C_FILES} thrird_party/minizip/minishared.c ${CPP_FILES_LIB})
 target_link_libraries (${PROJECT_NAME} minizip)
 target_include_directories(${PROJECT_NAME} PUBLIC include/fmi/include src/)
 set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
