@@ -144,11 +144,11 @@ int do_list(unzFile uf)
         display_zpos64(file_info.compressed_size, 7);
 
         dosdate_to_tm(file_info.dos_date, &tmu_date);
-        printf(" %3lu%%  %2.2lu-%2.2lu-%2.2lu  %2.2lu:%2.2lu  %8.8lx   %s\n", ratio,
-            (uint32_t)tmu_date.tm_mon + 1, (uint32_t)tmu_date.tm_mday,
-            (uint32_t)tmu_date.tm_year % 100,
-            (uint32_t)tmu_date.tm_hour, (uint32_t)tmu_date.tm_min,
-            file_info.crc, filename_inzip);
+//        printf(" %3lu%%  %2.2lu-%2.2lu-%2.2lu  %2.2lu:%2.2lu  %8.8lx   %s\n", ratio,
+//            (uint32_t)tmu_date.tm_mon + 1, (uint32_t)tmu_date.tm_mday,
+//            (uint32_t)tmu_date.tm_year % 100,
+//            (uint32_t)tmu_date.tm_hour, (uint32_t)tmu_date.tm_min,
+//            file_info.crc, filename_inzip);
 
         err = unzGoToNextFile(uf);
     }
@@ -197,7 +197,7 @@ int do_extract_currentfile(unzFile uf, int opt_extract_without_path, int *popt_o
     {
         if (opt_extract_without_path == 0)
         {
-            printf("creating directory: %s\n", filename_inzip);
+           // printf("creating directory: %s\n", filename_inzip);
             MKDIR(filename_inzip);
         }
         return err;
@@ -262,7 +262,7 @@ int do_extract_currentfile(unzFile uf, int opt_extract_without_path, int *popt_o
     /* Read from the zip, unzip to buffer, and write to disk */
     if (fout != NULL)
     {
-        printf(" extracting: %s\n", write_filename);
+       // printf(" extracting: %s\n", write_filename);
 
         do
         {
@@ -353,7 +353,7 @@ int miniunz(int argc, const char *argv[])
     const char *dirname = NULL;
     unzFile uf = NULL;
 
-    do_banner();
+    //do_banner();
     if (argc == 1)
     {
         do_help();
@@ -420,7 +420,7 @@ int miniunz(int argc, const char *argv[])
         return 1;
     }
 
-    printf("%s opened\n", zipfilename);
+   // printf("%s opened\n", zipfilename);
 
     /* Process command line options */
     if (opt_do_list == 1)

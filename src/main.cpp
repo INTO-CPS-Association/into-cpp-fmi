@@ -11,7 +11,7 @@ cout << "hello" << endl;
 	cout << fmu->getVersion() << endl;
 
 	auto callback = make_shared<fmi2::Callback>();
-	auto instance = fmu->instantiate("k",fmi2CoSimulation,"guid",true,true,callback);
+	auto instance = fmu->instantiate("k",fmi2CoSimulation,"{cfc65592-9ece-4563-9705-1581b6e7071c}",true,true,callback);
 
 	cout <<"instance: " << instance->component   << endl;
 }
