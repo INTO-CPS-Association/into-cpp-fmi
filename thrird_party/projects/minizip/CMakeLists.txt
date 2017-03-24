@@ -26,10 +26,15 @@ if(ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
 endif()
 
+
 include_directories(../../zlib/contrib/minizip)
+if (WIN32)
+	#windows, becuase windows just cannot figure out to do it correct. 
+	# must be a bug in msys mingw gcc 6.3	
+	# it doesnt read the rsp files.
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I../../zlib/contrib/minizip")
+endif() 
 
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I../../zlib/contrib/minizip")
 
 set(MINIZIP_SRC "../../zlib/contrib/minizip/ioapi.c"
 "miniunz.c"
@@ -57,7 +62,11 @@ endif()
 
 # create minizip library
 add_library(minizip ${MINIZIP_SRC} )#${MINIZIP_PUBLIC_HEADERS}
-target_link_libraries(minizip ZLIB::ZLIB)
+if (WIN32)
+	target_link_libraries(minizip libz.a)
+else()
+	target_link_libraries(minizip ZLIB::ZLIB)
+endif()
 target_include_directories(minizip
   PUBLIC
    "."  
