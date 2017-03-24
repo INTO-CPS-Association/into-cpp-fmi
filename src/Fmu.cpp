@@ -315,9 +315,9 @@ fmi2Status Fmu::doStep(fmi2Component comp, fmi2Real currentCommunicationPoint, f
 }
 
 /* Enter and exit initialization mode, terminate and reset */
-fmi2Status Fmu::setupExperiment(fmi2Component a, fmi2Boolean b, fmi2Real c, fmi2Real d, fmi2Boolean e, fmi2Real f)
+fmi2Status Fmu::setupExperiment(fmi2Component component, fmi2Boolean toleranceDefined, fmi2Real tolerance, fmi2Real startTime, fmi2Boolean stopTimeDefined, fmi2Real stopTime)
 {
-	return this->handles->setupExperiment(a, b, c, d, e, f);
+	return this->handles->setupExperiment(component, toleranceDefined, tolerance, startTime, stopTimeDefined, stopTime);
 }
 fmi2Status Fmu::enterInitializationMode(fmi2Component c)
 {
