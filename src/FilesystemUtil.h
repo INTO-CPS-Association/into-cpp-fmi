@@ -22,6 +22,7 @@
 #include <strsafe.h>
 
 #include <memory>
+#include <algorithm>
 
 #else
 #include <stdlib.h>
