@@ -54,12 +54,15 @@ Fmu::Fmu(const char* path)
 
 bool Fmu::initialize()
 {
+	auto cwd = getCurrentDir();
 	this->extractedDirectory = getTempDir();
 	std::cout << "Extraction directory is: " << *this->extractedDirectory << '\n';
 
 	if(!makePath(*this->extractedDirectory))
 	{
 		cerr << "Failed to create dir" << endl;
+
+		chdir(cwd->c_str());
 		return false;
 	}
 
@@ -69,6 +72,8 @@ bool Fmu::initialize()
 	} else
 	{
 		cerr << "unzip failed: " << path << endl;
+		chdir(cwd->c_str());
+		return false;
 	}
 
 	FMU* fmu = (FMU *) malloc(sizeof(FMU));
@@ -79,7 +84,6 @@ bool Fmu::initialize()
 
 	auto fmuNameLoc = subPath.rfind(separator());
 
-	auto name = subPath.substr(fmuNameLoc);
 
 	auto dllPath = string(*this->extractedDirectory);
 	dllPath.push_back(separator());
@@ -87,14 +91,28 @@ bool Fmu::initialize()
 	dllPath.push_back(separator());
 	dllPath.append(platform);
 //dllPath.push_back(separator());
-	dllPath.append(name);
+	//dllPath.append(name);
+
+	string name;
+
+		if(fmuNameLoc ==  string::npos)
+		{
+			dllPath.push_back(separator());
+				dllPath.append(subPath);
+		}
+		else{
+			dllPath.append( subPath.substr(fmuNameLoc));
+		}
+
 	dllPath.append(library_ext);
 
 	if (!loadDll(dllPath.c_str(), fmu))
 	{
+		chdir(cwd->c_str());
 		return false;
 	}
 	this->handles = fmu;
+	chdir(cwd->c_str());
 	return true;
 }
 

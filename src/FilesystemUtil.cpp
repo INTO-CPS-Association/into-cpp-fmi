@@ -123,3 +123,16 @@ shared_ptr<string> getTempDir() {
 #endif
 
 }
+
+
+shared_ptr<string> getCurrentDir(){
+#define BUFSIZE 512
+char buffer[BUFSIZE];
+char *answer = getcwd(buffer, sizeof(buffer));
+
+if (answer)
+{
+  return make_shared<string>( answer);
+}
+return NULL;
+}
