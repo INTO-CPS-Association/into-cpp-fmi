@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-int miniunz(int argc, const char *argv[]);
+int miniunz(int argc,const  char *argv[]);
 #ifdef __cplusplus
 }
 #endif

@@ -1,6 +1,6 @@
 [submodule "include/fmi"]
 	path = include/fmi
 	url = https://github.com/into-cps/fmi.git
-[submodule "thrird_party/minizip"]
-	path = thrird_party/minizip
-	url = https://github.com/nmoinvaz/minizip
+[submodule "thrird_party/zlib"]
+	path = thrird_party/zlib
+	url = https://github.com/madler/zlib.git

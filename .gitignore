@@ -14,7 +14,8 @@ CTestTestfile.cmake
 #
 *.exe
 *.dll
-
+*.obj
+*.a
 
 #Eclipse
 *.cproject
@@ -26,5 +27,7 @@ CTestTestfile.cmake
 
 
 # executables
+fmu
 fmu_main
 libfmu.a
+fmu_stability

@@ -7,12 +7,10 @@
 
 #include "FilesystemUtil.h"
 
-bool isDirExist(const std::string& path)
-{
+bool isDirExist(const std::string& path) {
 #if defined(_WIN32)
 	struct _stat info;
-	if (_stat(path.c_str(), &info) != 0)
-	{
+	if (_stat(path.c_str(), &info) != 0) {
 		return false;
 	}
 	return (info.st_mode & _S_IFDIR) != 0;
@@ -26,9 +24,9 @@ bool isDirExist(const std::string& path)
 #endif
 }
 
-bool makePath(const std::string& path)
-{
+bool makePath(const std::string& path) {
 #if defined(_WIN32)
+	printf("Making dir: %s\n",path.c_str());
 	int ret = _mkdir(path.c_str());
 #else
 	mode_t mode = 0755;
@@ -37,8 +35,7 @@ bool makePath(const std::string& path)
 	if (ret == 0)
 		return true;
 
-	switch (errno)
-	{
+	switch (errno) {
 	case ENOENT:
 		// parent didn't exist, try to create it
 	{
@@ -46,13 +43,13 @@ bool makePath(const std::string& path)
 		if (pos == std::string::npos)
 #if defined(_WIN32)
 			pos = path.find_last_of('\\');
-			if (pos == std::string::npos)
+		if (pos == std::string::npos)
 #endif
 			return false;
-		if (!makePath(path.substr(0, pos)))
+		if (!makePath(path.substr(0, pos))) {
 			return false;
-	}
-		// now, try to create again
+		}
+	}		// now, try to create again
 #if defined(_WIN32)
 		return 0 == _mkdir(path.c_str());
 #else
@@ -68,12 +65,12 @@ bool makePath(const std::string& path)
 	}
 }
 
-bool removePath(const std::string& path)
-{
+bool removePath(const std::string& path) {
 	if (path.size() < 1 || !isDirExist(path))
 		return false;
 #if defined(_WIN32)
-	//TODO
+	//FIXME
+	return true;
 #else
 	auto cmd = make_shared<std::string>("rm -r ");
 	cmd->append(path);
@@ -81,8 +78,7 @@ bool removePath(const std::string& path)
 #endif
 }
 
-shared_ptr<string> getTempDir()
-{
+shared_ptr<string> getTempDir() {
 
 #if defined(_WIN32)
 #define BUFSIZE 512
@@ -91,30 +87,34 @@ shared_ptr<string> getTempDir()
 	DWORD dwRetVal, dwRetVal2;
 	DWORD dwBytesRead;
 	DWORD dwBytesWritten;
-	DWORD dwBufSize=BUFSIZE;
+	DWORD dwBufSize = BUFSIZE;
 	UINT uRetVal;
-	WCHAR szTempName[BUFSIZE];
+	char szTempName[BUFSIZE];
 	char buffer[BUFSIZE];
-	WCHAR lpPathBuffer[BUFSIZE];
+	char lpPathBuffer[BUFSIZE];
 	BOOL fSuccess;
 
 	dwRetVal = GetTempPath(dwBufSize,     // length of the buffer
-			lpPathBuffer);// buffer for path
-	if (dwRetVal > dwBufSize || (dwRetVal == 0))
-	{
+			lpPathBuffer);     // buffer for path
+	if (dwRetVal > dwBufSize || (dwRetVal == 0)) {
 		return NULL;
 	}
 
 	// Create a temporary file.
-	uRetVal = GetTempFileName(lpPathBuffer,// directory for tmp files
-			L"fmu-",// temp file name prefix
-			0,// create unique name
-			szTempName);// buffer for name
-	if (uRetVal == 0)
-	{
+	uRetVal = GetTempFileName(lpPathBuffer,     // directory for tmp files
+			"fmu-",     // temp file name prefix
+			0,     // create unique name
+			szTempName);     // buffer for name
+	if (uRetVal == 0) {
 		return NULL;
 	}
-	return make_shared<string>(szTempName);
+
+	//string s(szTempName);
+	//std::replace( s.begin(), s.end(), 'x', 'y');
+
+	auto str = make_shared<string>(szTempName);
+	str->erase(std::remove(str->begin(), str->end(), '.'), str->end());
+	return str;
 #else
 	char template_name[] = "/tmp/fmu-XXXXXX";
 	char * name = mkdtemp(template_name);
