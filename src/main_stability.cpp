@@ -1,6 +1,7 @@
 #include "Fmu.h"
 #include <iostream>
 #include <memory>
+#include <fstream>
 
 using namespace std;
 using namespace fmi2;
@@ -27,20 +28,26 @@ using namespace fmi2;
 
 int main(int argc, char *argv[])
 {
-	auto path1 = argv[0];
-	auto path2 = argv[0];
+	auto path1 = argv[1];
+	auto path2 = argv[2];
 
 	cout << "Path 1: " << path1 << endl;
 	cout << "Path 2: " << path2 << endl;
 
 	cout << "Creating path 1 fmu" << endl;
 	auto fmu1 = make_shared<fmi2::Fmu>(path1);
-	cout << fmu1->initialize() << endl;
+	auto init1 = fmu1->initialize();
+	cout << init1 << endl;
+	if(!init1)
+		return -1;
 	cout << fmu1->getVersion() << endl;
 
 	cout << "Creating path 2 fmu" << endl;
 	auto fmu2 = make_shared<fmi2::Fmu>(path2);
-	cout << fmu2->initialize() << endl;
+	auto init2 = fmu2->initialize();
+	cout << init2 << endl;
+	if(!init2)
+		return -1;
 	cout << fmu2->getVersion() << endl;
 
 	cout << "Instantiating..." << endl;
@@ -74,13 +81,13 @@ int main(int argc, char *argv[])
 	auto stepSize = 0.01;
 
 	//prepare
+	instance1->fmu->setupExperiment(instance1->component, false, 0.0, 0.0, true, endTime);
 	instance1->fmu->enterInitializationMode(instance1->component);
 	instance1->fmu->exitInitializationMode(instance1->component);
-	instance1->fmu->setupExperiment(instance1->component, false, 0.0, 0.0, true, endTime);
 
+	instance2->fmu->setupExperiment(instance2->component, false, 0.0, 0.0, true, endTime);
 	instance2->fmu->enterInitializationMode(instance2->component);
 	instance2->fmu->exitInitializationMode(instance2->component);
-	instance2->fmu->setupExperiment(instance2->component, false, 0.0, 0.0, true, endTime);
 
 	fmi2ValueReference vr2_out[1] =
 	{ FMU2_fk };
@@ -94,8 +101,13 @@ int main(int argc, char *argv[])
 
 	fmi2Real vals[2] =
 	{ 0.0, 0.0 };
-	cout << "------------ Header ---------" << endl;
-	cout << "\"{FMU2}.FMU2Instance.fk\",\"{FMU}.FMUInstance.x1\",\"{FMU}.FMUInstance.v1\"" << endl;
+
+	std::fstream fs;
+	  fs.open ("result.csv", std::fstream::in | std::fstream::out | std::fstream::trunc);
+
+
+	//cout << "------------ Header ---------" << endl;
+	fs << "\"{FMU2}.FMU2Instance.fk\",\"{FMU}.FMUInstance.x1\",\"{FMU}.FMUInstance.v1\"" << endl;
 	while (time < endTime)
 	{
 
@@ -104,11 +116,11 @@ int main(int argc, char *argv[])
 		//copy fk
 		instance2->fmu->getReal(instance2->component, vr2_out, 1, vals);
 		instance1->fmu->setReal(instance1->component, vr1_in, 1, vals);
-		cout << vals[0] << ",";
+		fs << vals[0] << ",";
 
 		instance1->fmu->getReal(instance1->component, vr1_out, 2, vals);
 		instance2->fmu->setReal(instance2->component, vr2_in, 2, vals);
-		cout << vals[0] << "," << vals[1] << endl;
+		fs << vals[0] << "," << vals[1] << endl;
 
 		instance1->fmu->doStep(instance1->component, time, stepSize, false);
 		instance2->fmu->doStep(instance2->component, time, stepSize, false);
@@ -116,7 +128,9 @@ int main(int argc, char *argv[])
 		time += stepSize;
 	}
 
-	cout << " ----------- end --------------" << endl;
+	cout << "Done."<<endl;
+
+//	cout << " ----------- end --------------" << endl;
 
 //	cout << "hello" << endl;
 //	auto fmu = make_shared<fmi2::Fmu>(
