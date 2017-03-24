@@ -56,6 +56,13 @@ bool Fmu::initialize()
 {
 	this->extractedDirectory = getTempDir();
 	std::cout << "Extraction directory is: " << *this->extractedDirectory << '\n';
+
+	if(!makePath(*this->extractedDirectory))
+	{
+		cerr << "Failed to create dir" << endl;
+		return false;
+	}
+
 	if (this->unpack(path->c_str(), this->extractedDirectory->c_str()))
 	{
 		cout << "unzip ok" << endl;
