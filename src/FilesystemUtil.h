@@ -21,6 +21,7 @@
 // A safer version for string manipulation
 #include <strsafe.h>
 
+#include <memory>
 
 #else
 #include <stdlib.h>

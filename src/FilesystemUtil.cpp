@@ -73,7 +73,8 @@ bool removePath(const std::string& path)
 	if (path.size() < 1 || !isDirExist(path))
 		return false;
 #if defined(_WIN32)
-	//TODO
+	//FIXME
+	return true;
 #else
 	auto cmd = make_shared<std::string>("rm -r ");
 	cmd->append(path);
@@ -93,9 +94,9 @@ shared_ptr<string> getTempDir()
 	DWORD dwBytesWritten;
 	DWORD dwBufSize=BUFSIZE;
 	UINT uRetVal;
-	WCHAR szTempName[BUFSIZE];
+	char szTempName[BUFSIZE];
 	char buffer[BUFSIZE];
-	WCHAR lpPathBuffer[BUFSIZE];
+	char lpPathBuffer[BUFSIZE];
 	BOOL fSuccess;
 
 	dwRetVal = GetTempPath(dwBufSize,     // length of the buffer
@@ -107,13 +108,14 @@ shared_ptr<string> getTempDir()
 
 	// Create a temporary file.
 	uRetVal = GetTempFileName(lpPathBuffer,// directory for tmp files
-			L"fmu-",// temp file name prefix
+			"fmu-",// temp file name prefix
 			0,// create unique name
 			szTempName);// buffer for name
 	if (uRetVal == 0)
 	{
 		return NULL;
 	}
+
 	return make_shared<string>(szTempName);
 #else
 	char template_name[] = "/tmp/fmu-XXXXXX";
