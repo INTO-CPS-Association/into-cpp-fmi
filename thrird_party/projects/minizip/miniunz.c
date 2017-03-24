@@ -355,7 +355,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
     {
         if ((*popt_extract_without_path)==0)
         {
-            printf("creating directory: %s\n",filename_inzip);
+          //  printf("creating directory: %s\n",filename_inzip);
             mymkdir(filename_inzip);
         }
     }
@@ -430,7 +430,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
 
         if (fout!=NULL)
         {
-            printf(" extracting: %s\n",write_filename);
+          //  printf(" extracting: %s\n",write_filename);
 
             do
             {
@@ -634,7 +634,7 @@ int miniunz(argc,argv)
         printf("Cannot open %s or %s.zip\n",zipfilename,zipfilename);
         return 1;
     }
-    printf("%s opened\n",filename_try);
+  //  printf("%s opened\n",filename_try);
 
     if (opt_do_list==1)
         ret_value = do_list(uf);
