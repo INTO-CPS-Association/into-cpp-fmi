@@ -14,7 +14,8 @@ CTestTestfile.cmake
 #
 *.exe
 *.dll
-
+*.obj
+*.a
 
 #Eclipse
 *.cproject
