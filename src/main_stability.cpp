@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	auto fmu1 = make_shared<fmi2::Fmu>(path1);
 	auto init1 = fmu1->initialize();
 	cout << init1 << endl;
-	if(!init1)
+	if (!init1)
 		return -1;
 	cout << fmu1->getVersion() << endl;
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	auto fmu2 = make_shared<fmi2::Fmu>(path2);
 	auto init2 = fmu2->initialize();
 	cout << init2 << endl;
-	if(!init2)
+	if (!init2)
 		return -1;
 	cout << fmu2->getVersion() << endl;
 
@@ -102,33 +102,54 @@ int main(int argc, char *argv[])
 	fmi2Real vals[2] =
 	{ 0.0, 0.0 };
 
-	std::fstream fs;
-	  fs.open ("result.csv", std::fstream::in | std::fstream::out | std::fstream::trunc);
+	fmi2Real vals2[2] =
+	{ 0.0, 0.0 };
 
+	std::fstream fs;
+	fs.open("result.csv", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
 	//cout << "------------ Header ---------" << endl;
 	fs << "\"{FMU2}.FMU2Instance.fk\",\"{FMU}.FMUInstance.x1\",\"{FMU}.FMUInstance.v1\"" << endl;
+
+	fmi2FMUstate s1;
+	instance1->fmu->getFMUstate(instance1->component, &s1);
+	fmi2FMUstate s2;
+	instance2->fmu->getFMUstate(instance2->component, &s2);
+
+	instance2->fmu->getReal(instance2->component, vr2_out, 1, vals);
+	instance1->fmu->getReal(instance1->component, vr1_out, 2, vals2);
+
 	while (time < endTime)
 	{
 
 		// get
+		for (int repeat = 0; repeat < 6; repeat++)
+		{
+			instance1->fmu->setFMUstate(instance1->component, s1);
+			instance2->fmu->setFMUstate(instance2->component, s2);
 
-		//copy fk
-		instance2->fmu->getReal(instance2->component, vr2_out, 1, vals);
-		instance1->fmu->setReal(instance1->component, vr1_in, 1, vals);
-		fs << vals[0] << ",";
+			//copy fk
+			instance1->fmu->setReal(instance1->component, vr1_in, 1, vals);
+			fs << vals[0] << ",";
 
-		instance1->fmu->getReal(instance1->component, vr1_out, 2, vals);
-		instance2->fmu->setReal(instance2->component, vr2_in, 2, vals);
-		fs << vals[0] << "," << vals[1] << endl;
+			instance2->fmu->setReal(instance2->component, vr2_in, 2, vals2);
+			fs << vals2[0] << "," << vals2[1] << endl;
 
-		instance1->fmu->doStep(instance1->component, time, stepSize, false);
-		instance2->fmu->doStep(instance2->component, time, stepSize, false);
+			//dostep
+			instance1->fmu->doStep(instance1->component, time, stepSize, false);
+			instance2->fmu->doStep(instance2->component, time, stepSize, false);
 
+			//get
+			instance2->fmu->getReal(instance2->component, vr2_out, 1, vals);
+			instance1->fmu->getReal(instance1->component, vr1_out, 2, vals2);
+		}
 		time += stepSize;
+
+		instance1->fmu->getFMUstate(instance1->component, &s1);
+		instance2->fmu->getFMUstate(instance2->component, &s2);
 	}
 
-	cout << "Done."<<endl;
+	cout << "Done." << endl;
 
 //	cout << " ----------- end --------------" << endl;
 
