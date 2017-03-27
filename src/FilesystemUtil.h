@@ -33,6 +33,7 @@
 using namespace std;
 bool makePath(const std::string& path);
 bool removePath(const std::string& path);
+shared_ptr<string> getCurrentDir();
 shared_ptr<string> getTempDir();
 
 #endif /* SRC_FILESYSTEMUTIL_H_ */
