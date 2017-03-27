@@ -1,0 +1,11 @@
+	fmi2ValueReference vr1[3] =
+	{ FMU1_m1, FMU1_d1, FMU1_c1 };
+	fmi2Real val1[3] =
+	{ 1.0, 1.0, 1.0 };
+	instance1->fmu->setReal(instance1->component, vr1, 3, val1);
+
+	fmi2ValueReference vr2[5] =
+	{ FMU2_m2, FMU2_dc, FMU2_d2, FMU2_cc, FMU2_c2 };
+	fmi2Real val2[5] =
+	{ 1.0, 6E6, 2.0, 1.0, 1.0 };
+	instance2->fmu->setReal(instance2->component, vr2, 5, val2);
