@@ -25,7 +25,7 @@ pacman -S cmake
 
 # Compiling
 
-# Toolchain
+# Toolchain on Windows using MSYS mingw from MSYS shell
 
 ```bash
 cmake -DCMAKE_TOOLCHAIN_FILE=thrird_party/msys-toolchain.cmake .
