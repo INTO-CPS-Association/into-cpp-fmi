@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	cout << "Path 2: " << path2 << endl;
 
 	cout << "Creating path 1 fmu" << endl;
-	auto fmu1 = make_shared<fmi2::Fmu>(path1);
+	auto fmu1 = make_shared<fmi2::Fmu>(string(path1));
 	auto init1 = fmu1->initialize();
 	cout << init1 << endl;
 	if (!init1)
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	cout << fmu1->getVersion() << endl;
 
 	cout << "Creating path 2 fmu" << endl;
-	auto fmu2 = make_shared<fmi2::Fmu>(path2);
+	auto fmu2 = make_shared<fmi2::Fmu>(string(path2));
 	auto init2 = fmu2->initialize();
 	cout << init2 << endl;
 	if (!init2)

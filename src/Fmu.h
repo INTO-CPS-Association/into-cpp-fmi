@@ -27,13 +27,14 @@ namespace fmi2
 class Callback
 {
 public:
-	void log(fmi2String instanceName, fmi2Status status, fmi2String category, fmi2String message);
+	virtual ~Callback();
+	virtual void log(fmi2String instanceName, fmi2Status status, fmi2String category, fmi2String message);
 };
 
 typedef struct
 {
 	fmi2CallbackFunctions * functions;
-	shared_ptr<Callback> callbacks;
+	weak_ptr<Callback> callbacks;
 } ComponentContext;
 
  struct FmuComponent;
@@ -41,7 +42,8 @@ typedef struct
 class Fmu :public std::enable_shared_from_this<Fmu>
 {
 public:
-	Fmu(const char* path);bool initialize();
+	Fmu(string path);
+	bool initialize();
 	virtual ~Fmu();
 
 	shared_ptr<ComponentContext> getContext(const char* instanceName);
@@ -50,7 +52,7 @@ public:
 	static shared_ptr<string> combinePath(shared_ptr<string> path1, shared_ptr<string> path3);
 
 	shared_ptr<FmuComponent> instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID, fmi2Boolean visible,
-			fmi2Boolean loggingOn, shared_ptr<Callback> callback);
+			fmi2Boolean loggingOn, weak_ptr<Callback> callback);
 
 	/***************************************************
 	 Common Functions
@@ -103,7 +105,7 @@ private:
 	static const char* platform;
 	static const char* library_ext;
 	FMU* handles;
-	std::map<const char*, shared_ptr<ComponentContext>> activeCallbacks;
+	std::map<string, shared_ptr<ComponentContext>> activeCallbacks;
 
 	bool unpack(const char *zip_file_path, const char* output_folder);
 
