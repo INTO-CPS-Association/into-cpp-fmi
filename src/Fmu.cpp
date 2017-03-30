@@ -261,6 +261,8 @@ fmi2Status Fmu::setDebugLogging(fmi2Component a, fmi2Boolean b, size_t c, const 
 	return this->handles->setDebugLogging(a, b, c, d);
 }
 
+Callback::~Callback(){}
+
 void Callback::log(fmi2String instanceName, fmi2Status status, fmi2String category, fmi2String message)
 {
 	cout << Fmu::fmi2StatusToString(status)->c_str() << " " << instanceName << " - " << category << " " << message
@@ -270,8 +272,7 @@ void Callback::log(fmi2String instanceName, fmi2Status status, fmi2String catego
 
 shared_ptr<ComponentContext> Fmu::getContext(const char* instanceName)
 {
-
-	auto itr = activeCallbacks.find(instanceName);
+	auto itr = activeCallbacks.find(string(instanceName));
 
 	if (itr == activeCallbacks.end())
 	{
@@ -305,7 +306,14 @@ void fmuLogger(void *componentEnvironment, fmi2String instanceName, fmi2Status s
 
 	if (context != NULL)
 	{
-		context->callbacks->log(instanceName, status, category, completeMessage.c_str());
+		if(auto shp = context->callbacks.lock())
+		{
+		shp->log(instanceName, status, category, completeMessage.c_str());
+		}else
+		{
+			cout << "Name: " << instanceName << " Status: " << status << " Category: " << category << " Msg: "
+							<< completeMessage << endl;
+		}
 	} else
 	{
 		cout << "Name: " << instanceName << " Status: " << status << " Category: " << category << " Msg: "
@@ -316,7 +324,7 @@ void fmuLogger(void *componentEnvironment, fmi2String instanceName, fmi2Status s
 
 /* Creation and destruction of FMU instances and setting debug status */
 shared_ptr<FmuComponent> Fmu::instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String fmuGUID,
-		fmi2Boolean visible, fmi2Boolean loggingOn, shared_ptr<Callback> callback)
+		fmi2Boolean visible, fmi2Boolean loggingOn, weak_ptr<Callback> callback)
 {
 	fmi2CallbackFunctions *functions = (fmi2CallbackFunctions *) malloc(sizeof(fmi2CallbackFunctions));
 
@@ -329,7 +337,7 @@ shared_ptr<FmuComponent> Fmu::instantiate(fmi2String instanceName, fmi2Type fmuT
 	context->functions = functions;
 	context->callbacks = callback;
 
-	activeCallbacks.insert(make_pair(instanceName, context));
+	activeCallbacks[string(instanceName)]= context;
 
 	auto fmuResourceLocation = string("file:");
 	fmuResourceLocation.append(*this->extractedDirectory);
