@@ -45,11 +45,21 @@ inline char separator()
 #include "miniunzipz.h"
 
 
-Fmu::Fmu(const char* path)
+Fmu::Fmu(string path)
 {
 	this->path = make_shared<string>(path);
 	this->handles = NULL;
 	this->extractedDirectory = NULL;
+}
+
+
+void ReplaceStringInPlace(std::string& subject, const std::string& search,
+                          const std::string& replace) {
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+         subject.replace(pos, search.length(), replace);
+         pos += replace.length();
+    }
 }
 
 bool Fmu::initialize()
@@ -61,10 +71,21 @@ bool Fmu::initialize()
 	if(!makePath(*this->extractedDirectory))
 	{
 		cerr << "Failed to create dir" << endl;
-
 		chdir(cwd->c_str());
 		return false;
 	}
+
+
+#ifdef _WIN32
+
+
+	ReplaceStringInPlace(*path,string("/"),string("\\"));
+	if(path->find(string("\\"), 0)==0)
+	{
+		path->erase (0,1);
+	}
+#endif
+
 
 	if (this->unpack(path->c_str(), this->extractedDirectory->c_str()))
 	{
@@ -105,6 +126,16 @@ bool Fmu::initialize()
 		}
 
 	dllPath.append(library_ext);
+
+#ifdef _WIN32
+
+
+	ReplaceStringInPlace(dllPath,string("/"),string("\\"));
+	if(dllPath.find(string("\\"), 0)==0)
+	{
+		dllPath.erase (0,1);
+	}
+#endif
 
 	if (!loadDll(dllPath.c_str(), fmu))
 	{

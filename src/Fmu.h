@@ -41,7 +41,8 @@ typedef struct
 class Fmu :public std::enable_shared_from_this<Fmu>
 {
 public:
-	Fmu(const char* path);bool initialize();
+	Fmu(string path);
+	bool initialize();
 	virtual ~Fmu();
 
 	shared_ptr<ComponentContext> getContext(const char* instanceName);
