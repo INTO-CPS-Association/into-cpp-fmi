@@ -1,6 +1,6 @@
 /*
  * #%~
- * The Overture Abstract Syntax Tree
+ * INTO-CPP-FMI
  * %%
  * Copyright (C) 2017 - 2014 Aarhus University
  * %%
