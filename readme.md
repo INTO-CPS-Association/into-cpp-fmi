@@ -1,3 +1,21 @@
+# INTO-CPP-FMI
+
+This is a INTO-CPS C++11 library for FMI it provides a class capable of loading and interacting with FMUs.
+
+## Usage
+
+In your cmake file addd this project as a subfolder:
+
+```bash
+git submodule add <repo-url>
+```
+
+and in the CMakeList file add:
+
+```
+target_link_libraries (<my-target-name> libintocppfmi)
+```
+
 # Environment
 
 ## Mac
