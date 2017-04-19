@@ -489,4 +489,10 @@ fmi2Status Fmu::getDirectionalDerivative(fmi2Component comp, const fmi2ValueRefe
 	return this->handles->getDirectionalDerivative(comp, vr, s1, vr1, s2, vr2, vr3);
 }
 
+fmi2Status Fmu::getRealStatus(fmi2Component comp, const fmi2StatusKind s, fmi2Real *value)
+{
+	return this->handles->getRealStatus(comp, s, value);
+}
+
+
 } /* namespace fmi2 */
