@@ -37,6 +37,8 @@
 #include <iostream>
 #include <string>
 #include <cstdio>
+#include <stdarg.h>
+
 #include "FilesystemUtil.h"
 #include "FmuLoader.h"
 
