@@ -32,7 +32,7 @@
 #include <map>
 //#include <iostream>
 #include <string>
-
+#include <cstring>
 #include <memory>
 #include <iostream>
 #include <string>
