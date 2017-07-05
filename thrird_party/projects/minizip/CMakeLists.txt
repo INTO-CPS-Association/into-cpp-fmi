@@ -57,7 +57,7 @@ if(WIN32)
 endif()
 
 if(UNIX)
-#  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -O3")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -O3")
 endif()
 
 # create minizip library
