@@ -62,3 +62,7 @@ target_link_libraries (${PROJECT_NAME} minizip)
 target_include_directories(${PROJECT_NAME} PUBLIC include/fmi/include src/)
 set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+if(UNIX AND NOT APPLE)
+		  # for Linux, BSD, Solaris, Minix
+target_link_libraries (${PROJECT_NAME} dl)
+endif()
