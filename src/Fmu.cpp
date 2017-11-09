@@ -74,6 +74,12 @@ Fmu::Fmu(string path)
 }
 
 
+std::shared_ptr<string> Fmu::getPath()
+{
+  return this->path;
+}
+
+
 void ReplaceStringInPlace(std::string& subject, const std::string& search,
                           const std::string& replace) {
     size_t pos = 0;

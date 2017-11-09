@@ -121,6 +121,8 @@ public:
 	//INTO CPS specific
 	fmi2GetMaxStepsizeTYPE getMaxStepsize;
 
+  //Other
+  std::shared_ptr<string> getPath();
 private:
 
 	std::shared_ptr<string> extractedDirectory;
